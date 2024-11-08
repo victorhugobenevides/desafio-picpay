@@ -8,26 +8,24 @@ plugins {
 
 android {
     compileSdk 35
+
     defaultConfig {
         applicationId "com.picpay.desafio.android"
         minSdkVersion 21
         targetSdk 35
         versionCode 1
         versionName "1.0"
-
-        vectorDrawables.useSupportLibrary = true 
-
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         debug {}
 
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 
-            'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -37,76 +35,65 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget 
-        = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     namespace 'com.picpay.desafio.android'
 }
 
 dependencies {
+    // Kotlin and Core Libraries
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     implementation "androidx.core:core-ktx:$core_ktx_version"
-
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-
-
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version" 
-
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
-
-
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
     // RxJava
-    implementation "io.reactivex.rxjava3:rxjava:$rxjava_version" 
-    // RxJava 3
-    implementation "io.reactivex.rxjava3:rxandroid:$rxandroid_version" // RxAndroid 3
+    implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava3:rxandroid:$rxandroid_version"
 
+    // Retrofit and Networking
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
     implementation 'com.google.code.gson:gson:2.10.1'
 
-    // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version" 
-    
-    // Adaptador para RxJava 3
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version" 
-
-    implementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
-
+    // Image Loading and UI
     implementation "com.squareup.picasso:picasso:$picasso_version"
-    implementation "de.hdodenhof:circleimageview:$circleimageview_version" 
+    implementation "de.hdodenhof:circleimageview:$circleimageview_version"
+    implementation "com.github.bumptech.glide:compose:$glide_compose_version"
+    annotationProcessor("com.github.bumptech.glide:compiler:$glide_version")
 
+    // RecyclerView
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
 
-    // Testes
+    // Dependency Injection (Hilt)
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_version"
+
+    // Unit Testing
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
     testImplementation "androidx.arch.core:core-testing:$core_testing_version"
 
+    // Instrumented Testing
     androidTestImplementation "androidx.test:runner:$test_runner_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version" 
-
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "androidx.test:core-ktx:$core_ktx_test_version"
-
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
-    annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
-
-    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
 }
 
 kapt {
