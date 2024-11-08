@@ -2,8 +2,8 @@ buildscript {
     ext {
         kotlin_version = '1.9.20'
 
-        appcompat_version 
-        = '1.7.0'
+        appcompat_version
+                = '1.7.0'
         core_ktx_version = '1.15.0'
         core_testing_version = '2.2.0'
         constraintlayout_version = '2.2.0'
@@ -26,6 +26,12 @@ buildscript {
         rxjava_version = "3.1.5" // RxJava 3
         rxandroid_version = "3.0.2" // RxAndroid 3
         core_ktx_test_version = "1.6.1"
+
+        hilt_version = "2.51.1"
+        hilt_compose_version = "1.2.0"
+        glide_version = "1.0.0-alpha.1"
+        glide_compose_version = "1.2.0"
+
     }
 
     repositories {
@@ -50,6 +56,6 @@ allprojects {
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir 
+    delete rootProject.buildDir
 
 }
