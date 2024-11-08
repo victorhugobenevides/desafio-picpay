@@ -29,19 +29,25 @@ class MainViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             try {
                 val result = getUsers.execute()
-                if (result.isSuccess) {
-                    _uiState.value = UiState.Success(result.getOrNull() ?: emptyList())
-                } else {
-                    _uiState.value = UiState.Error("Erro ao carregar usuários")
+                when {
+                    result.isSuccess -> {
+                        _uiState.value = UiState.Success(result.getOrNull() ?: emptyList())
+                    }
+                    result.isFailure -> {
+                        _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
+                    }
+                    else -> {
+                        _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
+                    }
                 }
             } catch (e: Exception) {
-                _uiState.value = UiState.Error("Erro: ${e.message}")
+                _uiState.value = UiState.Error((e.toString()))
             }
         }
     }
 
     sealed class UiState {
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Success(val users: List<User>) : UiState()
         data class Error(val message: String) : UiState()
     }
