@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.domain.usecase
+package com.picpay.desafio.android.domain.usecase.di
 
 import com.picpay.desafio.android.domain.entity.User
 
