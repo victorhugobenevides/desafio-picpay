@@ -1,3 +1,5 @@
+package com.picpay.desafio.android.repository
+
 import com.nhaarman.mockitokotlin2.whenever
 import com.picpay.desafio.android.data.remote.PicPayService
 import com.picpay.desafio.android.data.repository.UserRepositoryImp
@@ -45,13 +47,12 @@ class UserRepositoryImpTest {
         val exception = RuntimeException("Network error")
         whenever(picPayService.getUsers()).thenThrow(exception)
 
-        try{
-            // Chama o método do repositório
-            userRepository.getUsers()
-        }catch (e: Exception){
-            // Verifica que o resultado é uma exceção
-            assertEquals(exception, e)
-        }
+        // Chama o método do repositório
+        val result =  userRepository.getUsers()
+
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull()?.message?.contains("Erro desconhecido") == true)
 
 
     }

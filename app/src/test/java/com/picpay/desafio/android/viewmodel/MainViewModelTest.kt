@@ -1,3 +1,5 @@
+package com.picpay.desafio.android.viewmodel
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.whenever

@@ -27,7 +27,6 @@ class MainViewModel @Inject constructor(
     private fun getUsers() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            try {
                 val result = getUsers.execute()
                 when {
                     result.isSuccess -> {
@@ -37,9 +36,6 @@ class MainViewModel @Inject constructor(
                         _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
                     }
                 }
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error((e.toString()))
-            }
         }
     }
 
