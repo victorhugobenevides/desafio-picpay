@@ -23,18 +23,22 @@ jobs:
           command: chmod +x gradlew
 
       - run:
-          name: Set up Android emulator
+          name: Set up Android emulator with Google APIs and GPU
           command: |
-            sdkmanager "system-images;android-30;default;x86_64"
-            echo no | avdmanager create avd -n test -k "system-images;android-30;default;x86_64" -d pixel
-            emulator -avd test -no-window -no-audio -no-boot-anim -writable-system &
+            sdkmanager "system-images;android-30;google_apis;x86_64"
+            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
+            emulator -avd test -no-window -gpu swiftshader_indirect -no-audio -writable-system &
 
       - run:
           name: Wait for emulator to start
           command: |
             adb wait-for-device
+            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+              echo "Waiting for emulator to fully boot..."
+              sleep 5
+            done
             adb shell wm dismiss-keyguard
-            sleep 60 # Aguarde tempo suficiente para a inicialização completa do emulador
+            sleep 90 # Aguarde tempo suficiente para a inicialização completa do emulador
 
       - run:
           name: Run instrumented tests
