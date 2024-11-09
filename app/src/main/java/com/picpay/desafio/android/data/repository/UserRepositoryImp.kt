@@ -9,10 +9,6 @@ class UserRepositoryImp @Inject constructor(
     private val picPayService: PicPayService
 ) : UserRepository {
     override suspend fun getUsers(): Result<List<User>> {
-        return try {
             return Result.success(picPayService.getUsers())
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
 }

@@ -16,7 +16,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     // LiveData para o estado da UI
-    private val _uiState = MutableLiveData<UiState>(UiState.Loading)
+    private val _uiState = MutableLiveData<UiState>(UiState.Idle)
     val uiState: LiveData<UiState> = _uiState
 
 
@@ -36,9 +36,6 @@ class MainViewModel @Inject constructor(
                     result.isFailure -> {
                         _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
                     }
-                    else -> {
-                        _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
-                    }
                 }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error((e.toString()))
@@ -47,6 +44,7 @@ class MainViewModel @Inject constructor(
     }
 
     sealed class UiState {
+        data object Idle : UiState()
         data object Loading : UiState()
         data class Success(val users: List<User>) : UiState()
         data class Error(val message: String) : UiState()

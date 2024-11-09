@@ -24,6 +24,7 @@ fun MainScreen(navController: NavHostController?) {
     ) {
         when (val state = uiState.value) {
             is MainViewModel.UiState.Loading -> LoadingScreen()
+            MainViewModel.UiState.Idle -> LoadingScreen()
             is MainViewModel.UiState.Success -> UserList(users = state.users)
             is MainViewModel.UiState.Error -> ErrorScreen(message = state.message)
             null -> {}
