@@ -46,13 +46,15 @@ jobs:
           command: ./gradlew connectedAndroidTest
       - store_test_results:
           path: app/build/outputs/androidTest-results
-
+      - store_artifacts:
+          path: app/build/outputs/androidTest-results
       - run:
           name: Run unit tests
           command: ./gradlew testReleaseUnitTest
       - store_test_results:
           path: app/build/test-results/testReleaseUnitTest
-
+      - store_artifacts:
+          path: app/build/test-results/testReleaseUnitTest
       - run:
           name: Build debug APK
           command: ./gradlew assembleDebug

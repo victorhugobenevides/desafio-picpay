@@ -42,7 +42,7 @@ fun UserList(users: List<User>) {
             )
         }
         
-        items(users) { user ->
+        items(users,  key = { it.id }) { user ->
             UserListItem(user)
         }
     }
