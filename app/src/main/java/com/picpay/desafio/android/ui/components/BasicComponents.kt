@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.domain.entity.User
+import com.picpay.desafio.android.ui.theme.colorAccent
 import com.picpay.desafio.android.ui.theme.colorAlert
 import com.picpay.desafio.android.ui.theme.colorDetail
 import com.picpay.desafio.android.ui.theme.colorPrimaryLight
@@ -87,7 +88,7 @@ fun LoadingScreen() {
             .fillMaxSize()
             .testTag("Loading")
     ) {
-        CircularProgressIndicator(color = colorPrimaryLight)
+        CircularProgressIndicator(color = colorAccent)
     }
 }
 
