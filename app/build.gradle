@@ -64,7 +64,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation 'androidx.compose.material3:material3-android:1.3.1'
     implementation 'androidx.compose.runtime:runtime-livedata:1.7.5'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
     // RxJava
     implementation "io.reactivex.rxjava3:rxjava:$rxjava_version"
@@ -89,11 +88,17 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
+
     // Unit Testing
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
     testImplementation "androidx.arch.core:core-testing:$core_testing_version"
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
+    testImplementation "com.squareup.okhttp3:mockwebserver:4.9.2"
+    testImplementation "com.google.truth:truth:1.1.3"
 
     // Instrumented Testing
     androidTestImplementation "androidx.test:runner:$test_runner_version"

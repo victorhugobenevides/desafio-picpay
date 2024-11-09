@@ -5,7 +5,7 @@ import com.picpay.desafio.android.domain.entity.User
 import com.picpay.desafio.android.domain.repository.UserRepository
 import javax.inject.Inject
 
-class UserRemoteDataSource @Inject constructor(
+class UserRepositoryImp @Inject constructor(
     private val picPayService: PicPayService
 ) : UserRepository {
     override suspend fun getUsers(): Result<List<User>> {
