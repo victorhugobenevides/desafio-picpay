@@ -25,17 +25,16 @@ jobs:
       - run:
           name: Set up Android emulator
           command: |
-            sdkmanager "system-images;android-30;google_apis;x86_64"
-            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
-            emulator -avd test -no-window -no-audio -no-boot-anim &
+            sdkmanager "system-images;android-30;default;x86_64"
+            echo no | avdmanager create avd -n test -k "system-images;android-30;default;x86_64" -d pixel
+            emulator -avd test -no-window -no-audio -no-boot-anim -writable-system &
 
       - run:
           name: Wait for emulator to start
           command: |
-            # Aguarda até que o emulador esteja disponível e desbloqueia a tela
             adb wait-for-device
-            adb shell input keyevent 82
-            sleep 30 # Espera adicional para garantir que o emulador está pronto
+            adb shell wm dismiss-keyguard
+            sleep 60 # Aguarde tempo suficiente para a inicialização completa do emulador
 
       - run:
           name: Run instrumented tests
