@@ -1,6 +1,5 @@
 package com.picpay.desafio.android.ui.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,13 +10,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+open class MainViewModel @Inject constructor(
     private val getUsers: GetUsers
 ) : ViewModel() {
 
     // LiveData para o estado da UI
     private val _uiState = MutableLiveData<UiState>(UiState.Idle)
-    val uiState: LiveData<UiState> = _uiState
+    open var uiState: MutableLiveData<UiState> = _uiState
 
 
     init {

@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -80,7 +81,7 @@ fun LoadingScreen() {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        CircularProgressIndicator(color = colorPrimaryLight)
+        CircularProgressIndicator(color = colorPrimaryLight, modifier = Modifier.testTag("Loading"))
     }
 }
 
@@ -91,6 +92,7 @@ fun ErrorScreen(message: String, onRetry: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .testTag("Error")
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(

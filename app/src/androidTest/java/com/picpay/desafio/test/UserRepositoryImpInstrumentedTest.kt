@@ -1,4 +1,4 @@
-package com.picpay.desafio.android
+package com.picpay.desafio.test
 
 import com.google.gson.Gson
 import com.picpay.desafio.android.data.remote.PicPayService
