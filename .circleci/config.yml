@@ -44,7 +44,7 @@ jobs:
           name: Run instrumented tests
           command: ./gradlew connectedAndroidTest
       - store_test_results:
-          path: app\build\outputs\androidTest-results
+          path: app/build/outputs/androidTest-results
 
       - run:
           name: Run unit tests
