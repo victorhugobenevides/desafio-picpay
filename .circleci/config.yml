@@ -44,18 +44,13 @@ jobs:
           name: Run instrumented tests
           command: ./gradlew connectedAndroidTest
       - store_test_results:
-          path: app/build/reports/androidTests/connected/debug/
-      - store_artifacts:
-          path: app/build/reports/androidTests/connected/debug/
-          destination: androidTestReports
+          path: app/build/reports/androidTests/connected
 
       - run:
           name: Run unit tests
           command: ./gradlew testReleaseUnitTest
       - store_test_results:
           path: app/build/test-results/testReleaseUnitTest
-      - store_test_results:
-          path: core/build/test-results/testReleaseUnitTest
 
       - run:
           name: Build debug APK
