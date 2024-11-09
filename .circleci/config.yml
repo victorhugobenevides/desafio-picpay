@@ -36,6 +36,7 @@ jobs:
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
               sleep 5
+            
             done
             adb shell wm dismiss-keyguard
             sleep 210 # Aguarde tempo suficiente para a inicialização completa do emulador

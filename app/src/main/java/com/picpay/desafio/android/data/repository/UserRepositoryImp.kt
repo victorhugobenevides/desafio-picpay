@@ -2,7 +2,7 @@ package com.picpay.desafio.android.data.repository
 
 import com.picpay.desafio.android.data.remote.PicPayService
 import com.picpay.desafio.android.domain.entity.User
-import com.picpay.desafio.android.domain.repository.UserRepository
+import com.picpay.desafio.android.domain.di.UserRepository
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject

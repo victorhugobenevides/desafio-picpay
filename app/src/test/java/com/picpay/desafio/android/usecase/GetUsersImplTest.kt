@@ -1,7 +1,7 @@
 package com.picpay.desafio.android.usecase
 
 import com.picpay.desafio.android.domain.entity.User
-import com.picpay.desafio.android.domain.repository.UserRepository
+import com.picpay.desafio.android.domain.di.UserRepository
 import com.picpay.desafio.android.domain.usecase.GetUsersImpl
 import com.picpay.desafio.android.domain.usecase.di.GetUsers
 import kotlinx.coroutines.runBlocking
