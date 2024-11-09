@@ -63,7 +63,11 @@ fun UserListItem(
 
 @Composable
 fun ProfileImage(url: String) {
-    Box(contentAlignment = Alignment.Center) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .testTag("ProfileImage")
+    ) {
         AsyncImage(
             model = url,
             contentDescription = null,
@@ -79,9 +83,11 @@ fun ProfileImage(url: String) {
 fun LoadingScreen() {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("Loading")
     ) {
-        CircularProgressIndicator(color = colorPrimaryLight, modifier = Modifier.testTag("Loading"))
+        CircularProgressIndicator(color = colorPrimaryLight)
     }
 }
 

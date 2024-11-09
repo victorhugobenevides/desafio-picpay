@@ -26,6 +26,7 @@ fun UserList(users: List<User>) {
             .fillMaxSize()
             .background(colorPrimary)
             .padding(16.dp)
+            .testTag("UserList")
     ) {
         item {
             Text(

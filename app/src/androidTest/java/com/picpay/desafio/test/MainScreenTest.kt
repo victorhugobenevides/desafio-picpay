@@ -18,7 +18,7 @@ class MainScreenTest {
         // Configurar o conteúdo do Composable
         composeTestRule.setContent {
             // Cria um MutableState para simular o estado de Loading
-            MainScreen(uiState = MainViewModel.UiState.Loading, navController = null)
+            MainScreen(uiState = MainViewModel.UiState.Loading)
         }
 
         // Verifica se o LoadingScreen é exibido

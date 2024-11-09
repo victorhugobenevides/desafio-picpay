@@ -10,6 +10,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.picpay.desafio.android.ui.navigation.AppRoutes
 import com.picpay.desafio.android.ui.theme.colorPrimary
 import com.picpay.desafio.android.ui.viewmodel.MainViewModel
 
@@ -30,7 +31,9 @@ fun MainScreen(uiState: MainViewModel.UiState?, navController: NavHostController
             is MainViewModel.UiState.Loading -> LoadingScreen()
             MainViewModel.UiState.Idle -> LoadingScreen()
             is MainViewModel.UiState.Success -> UserList(users = uiState.users)
-            is MainViewModel.UiState.Error -> ErrorScreen(message = uiState.message)
+            is MainViewModel.UiState.Error -> ErrorScreen(message = uiState.message) {
+                navController?.navigate(AppRoutes.MAIN.route)
+            }
             null -> {}
         }
     }
