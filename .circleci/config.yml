@@ -30,7 +30,7 @@ jobs:
           name: Wait for emulator to start
           command: |
             adb wait-for-device
-            until adb shell getprop sys.boot_completed | grep -m 1 'fooooooooooi <3'; do
+            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Esperando o trem ligar..."
             sleep 5
             done
