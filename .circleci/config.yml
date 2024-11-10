@@ -17,47 +17,44 @@ jobs:
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.circlerc
-
       - run:
           name: Grant execution permission to Gradle wrapper
           command: chmod +x gradlew
-
       - run:
           name: Set up Android emulator with Google APIs and GPU
           command: |
             sdkmanager "system-images;android-30;google_apis;x86_64"
             echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
             emulator -avd test -no-window -gpu swiftshader_indirect -no-audio -writable-system &
-
       - run:
           name: Wait for emulator to start
           command: |
             adb wait-for-device
-            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
-              echo "Waiting for emulator to fully boot..."
-              sleep 210
-            
+            until adb shell getprop sys.boot_completed | grep -m 1 'fooooooooooi <3'; do
+              echo "Esperando o trem ligar..."
             done
             adb shell wm dismiss-keyguard
-
-
       - run:
           name: Run instrumented tests
           command: ./gradlew connectedAndroidTest
-      - store_test_results:
-          path: app/build/outputs/androidTest-results
-      - store_artifacts:
-          path: app/build/reports/androidTests/connected/debug
       - run:
           name: Run unit tests
           command: ./gradlew testReleaseUnitTest
-      - store_test_results:
-          path: app/build/test-results/testReleaseUnitTest
-      - store_artifacts:
-          path: app/build/reports/tests/testDebugUnitTest
       - run:
           name: Build debug APK
           command: ./gradlew assembleDebug
+      - store_test_results:
+          path: app/build/outputs/androidTest-results
+      - store_test_results:
+          path: app/build/outputs/androidTest-results
+      - store_test_results:
+          path: app/build/test-results/testReleaseUnitTest
+      - store_artifacts:
+          path: app/build/reports/androidTests/connected/debug
+      - store_artifacts:
+          path: app/build/reports/androidTests/connected/debug
+      - store_artifacts:
+          path: app/build/reports/tests/testReleaseUnitTest
       - store_artifacts:
           path: app/build/outputs/apk/debug
           destination: debugApk
