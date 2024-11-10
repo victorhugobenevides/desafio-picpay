@@ -33,12 +33,12 @@ jobs:
             echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
             emulator -avd test -gpu swiftshader_indirect -no-audio &
             adb wait-for-device
-            sleep 90  # Aumenta o tempo para garantir a inicialização completa
+            sleep 90
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
               sleep 10
             done
-            adb shell wm dismiss-keyguard  # Remove o bloqueio de tela se houver
+            adb shell wm dismiss-keyguard
 
       - run:
           name: Run unit tests
