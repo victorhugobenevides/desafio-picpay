@@ -2,6 +2,9 @@
 
 <p>Este é um projeto de migração que implementa melhorias utilizando <strong>Clean Architecture</strong>, os princípios <strong>SOLID</strong> e <strong>design patterns</strong>. A aplicação foi migrada para uma estrutura mais organizada e escalável, facilitando a manutenção e extensibilidade.</p>
 
+
+<img src="https://github.com/mobilepicpay/desafio-android/blob/master/desafio-picpay2.gif" width="300"/>
+
 <h2>Estrutura do Projeto</h2>
 
 <p>O projeto está dividido em módulos e pacotes específicos que seguem os princípios do Clean Architecture, organizados da seguinte maneira:</p>
