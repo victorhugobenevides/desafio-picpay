@@ -2,7 +2,7 @@
 
 <p>Este é um projeto de migração que implementa melhorias utilizando <strong>Clean Architecture</strong>, os princípios <strong>SOLID</strong> e <strong>design patterns</strong>. A aplicação foi migrada para uma estrutura mais organizada e escalável, facilitando a manutenção e extensibilidade.</p>
 
-<img src="https://github.com/victorhugobenevides/desafio-picpay/blob/main/desafio-picpay-2.gif" alt="Demonstração">
+<img src="https://github.com/victorhugobenevides/desafio-picpay/blob/main/desafio-picpay-2.gif" alt="Demonstração" width="200">
 
 <h2>Estrutura do Projeto</h2>
 
