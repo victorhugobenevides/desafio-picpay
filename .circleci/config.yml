@@ -14,63 +14,41 @@ jobs:
       - checkout
 
       - run:
-          name: Install dependencies
+          name: Set up Java Environment
           command: |
-            sudo apt-get update
-            sudo apt-get install -y openjdk-17-jdk
+            sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.circlerc
 
       - run:
-          name: Grant execution permissions to Gradle wrapper
+          name: Set Gradle Wrapper Permissions
           command: chmod +x gradlew
 
       - run:
-          name: Set up Android emulator
+          name: Run Instrumented Tests with Coverage on Emulator
           command: |
             sdkmanager "system-images;android-30;google_apis;x86"
             echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86" -d pixel
             emulator -avd test -gpu swiftshader_indirect -no-audio -no-snapshot &
-
-      - run:
-          name: Wait for emulator to fully boot
-          command: |
-            adb wait-for-device
-            sleep 180  # Tempo de espera aumentado para garantir que o emulador esteja totalmente inicializado
+            adb wait-for-device && sleep 180
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
               sleep 10
             done
-            adb shell input keyevent 82  # Desbloqueia a tela do emulador
-            adb devices  # Confirma que o dispositivo está conectado
-
-      - run:
-          name: Run unit tests
-          command: ./gradlew testDebugUnitTest
-
-      - run:
-          name: Generate JaCoCo report for unit tests
-          command: ./gradlew jacocoTestReport
-
-      - run:
-          name: Run instrumented tests and gather coverage data
-          command: |
-            ./gradlew connectedDebugAndroidTest
-            echo "Searching for coverage.ec file in various directories..."
+            adb shell input keyevent 82 && adb devices  # Desbloqueio e verificação de conexão
+            ./gradlew connectedDebugAndroidTest  # Executa os testes instrumentados
             mkdir -p app/build/outputs/code-coverage/connected/
-            adb shell run-as com.picpay.desafio.android ls /data/data/com.picpay.desafio.android/files/coverage.ec && \
             adb shell run-as com.picpay.desafio.android cat /data/data/com.picpay.desafio.android/files/coverage.ec > app/build/outputs/code-coverage/connected/coverage.ec || \
-            echo "Coverage file not found in /data/data/com.picpay.desafio.android/files/"
-
-            # Fallback para /sdcard se necessário
-            adb shell ls /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec && \
             adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/ || \
-            echo "Coverage file not found on /sdcard/Android/data/com.picpay.desafio.android/files/"
+            echo "Coverage file not found."
+            ./gradlew connectedDebugAndroidTestCoverage  # Gera o relatório de cobertura do JaCoCo
 
       - run:
-          name: Generate JaCoCo report for instrumented tests
-          command: ./gradlew connectedDebugAndroidTestCoverage
+          name: Run Unit Tests and Generate JaCoCo Report
+          command: |
+            ./gradlew testDebugUnitTest
+            ./gradlew jacocoTestReport
 
       - store_test_results:
           path: app/build/test-results
@@ -80,11 +58,7 @@ jobs:
           destination: reports
 
       - run:
-          name: List test results for debugging
-          command: ls -R app/build/reports/androidTests/connected/
-
-      - run:
-          name: Build debug APK
+          name: Build Debug APK
           command: ./gradlew assembleDebug
 
       - store_artifacts:
