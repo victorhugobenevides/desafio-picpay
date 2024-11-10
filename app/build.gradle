@@ -4,7 +4,6 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
-    id("jacoco")
 }
 
 android {
@@ -12,28 +11,29 @@ android {
 
     defaultConfig {
         applicationId "com.picpay.desafio.android"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdk 35
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     testOptions {
-        unitTests.includeAndroidResources = true
-        execution = 'ANDROIDX_TEST_ORCHESTRATOR'
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
+        debug {}
+
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     buildFeatures {
         compose true
     }
@@ -126,35 +126,4 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
-}
-
-// Configuração Jacoco
-jacoco {
-    toolVersion = "0.8.7"
-}
-
-task jacocoTestReport(type: JacocoReport) {
-    dependsOn "connectedDebugAndroidTest"
-
-    reports {
-        xml.required = true
-        html.required = true
-    }
-
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
-                      '**/*Test*.*', 'android/**/*.*']
-    def javaClasses = fileTree(
-            dir: "$buildDir/intermediates/javac/debug/classes",
-            excludes: fileFilter
-    )
-    def kotlinClasses = fileTree(
-            dir: "$buildDir/tmp/kotlin-classes/debug",
-            excludes: fileFilter
-    )
-
-    classDirectories.setFrom(files([javaClasses, kotlinClasses]))
-    sourceDirectories.setFrom(files(['src/main/java', 'src/main/kotlin']))
-    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
-            "outputs/code-coverage/connected/*coverage.ec"
-    ]))
 }

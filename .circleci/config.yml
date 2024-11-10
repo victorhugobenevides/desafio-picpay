@@ -1,66 +1,63 @@
 version: 2.1
-
 orbs:
   android: circleci/android@2.5.0
-
 jobs:
   build:
     executor:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-
     steps:
       - checkout
-
       - run:
-          name: Set up Java Environment
+          name: Install JDK and set JAVA_HOME
           command: |
-            sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
+            sudo apt-get update
+            sudo apt-get install -y openjdk-17-jdk
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.circlerc
 
       - run:
-          name: Set Gradle Wrapper Permissions
+          name: Grant execution permission to Gradle wrapper
           command: chmod +x gradlew
 
       - run:
-          name: Run Instrumented Tests with Coverage on Emulator
+          name: Set up Android emulator with Google APIs and GPU
           command: |
-            sdkmanager "system-images;android-30;google_apis;x86"
-            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86" -d pixel
-            emulator -avd test -gpu swiftshader_indirect -no-audio -no-snapshot &
-            adb wait-for-device && sleep 180
+            sdkmanager "system-images;android-30;google_apis;x86_64"
+            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
+            emulator -avd test -no-window -gpu swiftshader_indirect -no-audio -writable-system &
+
+      - run:
+          name: Wait for emulator to start
+          command: |
+            adb wait-for-device
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
-              sleep 10
+              sleep 210
+            
             done
-            adb shell input keyevent 82 && adb devices  # Desbloqueio e verificação de conexão
-            ./gradlew connectedDebugAndroidTest  # Executa os testes instrumentados
-            mkdir -p app/build/outputs/code-coverage/connected/
-            adb shell run-as com.picpay.desafio.android cat /data/data/com.picpay.desafio.android/files/coverage.ec > app/build/outputs/code-coverage/connected/coverage.ec || \
-            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/ || \
-            echo "Coverage file not found."
-            ./gradlew connectedDebugAndroidTestCoverage  # Gera o relatório de cobertura do JaCoCo
+            adb shell wm dismiss-keyguard
+
 
       - run:
-          name: Run Unit Tests and Generate JaCoCo Report
-          command: |
-            ./gradlew testDebugUnitTest
-            ./gradlew jacocoTestReport
-
+          name: Run instrumented tests
+          command: ./gradlew connectedAndroidTest
       - store_test_results:
-          path: app/build/test-results
-
+          path: app/build/outputs/androidTest-results
       - store_artifacts:
-          path: app/build/reports
-          destination: reports
-
+          path: app/build/outputs/androidTest-results
       - run:
-          name: Build Debug APK
+          name: Run unit tests
+          command: ./gradlew testReleaseUnitTest
+      - store_test_results:
+          path: app/build/test-results/testReleaseUnitTest
+      - store_artifacts:
+          path: app/build/test-results/testReleaseUnitTest
+      - run:
+          name: Build debug APK
           command: ./gradlew assembleDebug
-
       - store_artifacts:
           path: app/build/outputs/apk/debug
           destination: debugApk
