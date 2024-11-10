@@ -31,23 +31,18 @@ jobs:
           command: |
             sdkmanager "system-images;android-30;google_apis;x86_64"
             echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
-            emulator -avd test -gpu swiftshader_indirect -no-audio &
+            emulator -avd test -gpu swiftshader_indirect -no-audio -no-snapshot &
+
+      - run:
+          name: Wait for emulator to fully boot
+          command: |
             adb wait-for-device
             sleep 90
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
               sleep 10
             done
-            adb shell wm dismiss-keyguard
-
-      - run:
-          name: Run unit tests
-          command: ./gradlew testDebugUnitTest
-
-      - run:
-          name: Generate JaCoCo report for unit tests
-          command: ./gradlew jacocoTestReport
-
+            adb shell input keyevent 82 # Desbloqueia a tela
       - run:
           name: Run instrumented tests and gather coverage data
           command: |
@@ -57,6 +52,14 @@ jobs:
       - run:
           name: Generate JaCoCo report for instrumented tests
           command: ./gradlew connectedDebugAndroidTestCoverage
+
+      - run:
+          name: Run unit tests
+          command: ./gradlew testDebugUnitTest
+
+      - run:
+          name: Generate JaCoCo report for unit tests
+          command: ./gradlew jacocoTestReport
 
       - store_test_results:
           path: app/build/test-results
