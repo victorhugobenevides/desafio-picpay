@@ -29,20 +29,20 @@ jobs:
       - run:
           name: Set up Android emulator
           command: |
-            sdkmanager "system-images;android-30;google_apis;x86_64"
-            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
+            sdkmanager "system-images;android-30;google_apis;x86"
+            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86" -d pixel
             emulator -avd test -gpu swiftshader_indirect -no-audio -no-snapshot &
 
       - run:
           name: Wait for emulator to fully boot
           command: |
             adb wait-for-device
-            sleep 90
+            sleep 120  # Aumenta o tempo de espera para garantir que o emulador esteja completamente inicializado
             until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
               echo "Waiting for emulator to fully boot..."
               sleep 10
             done
-            adb shell input keyevent 82 # Desbloqueia a tela
+            adb shell input keyevent 82  # Desbloqueia a tela do emulador
 
       - run:
           name: Run unit tests
@@ -58,12 +58,11 @@ jobs:
             ./gradlew connectedDebugAndroidTest
             echo "Searching for coverage.ec file in various directories..."
             mkdir -p app/build/outputs/code-coverage/connected/
-            # Verifica o diretório /data/data para o arquivo coverage.ec
             adb shell run-as com.picpay.desafio.android ls /data/data/com.picpay.desafio.android/files/coverage.ec && \
             adb shell run-as com.picpay.desafio.android cat /data/data/com.picpay.desafio.android/files/coverage.ec > app/build/outputs/code-coverage/connected/coverage.ec || \
             echo "Coverage file not found in /data/data/com.picpay.desafio.android/files/"
 
-            # Verifica o diretório /sdcard caso o primeiro falhe
+            # Fallback para /sdcard se necessário
             adb shell ls /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec && \
             adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/ || \
             echo "Coverage file not found on /sdcard/Android/data/com.picpay.desafio.android/files/"
