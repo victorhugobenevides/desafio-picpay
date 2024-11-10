@@ -36,15 +36,14 @@ jobs:
       - run:
           name: Wait for emulator to fully boot
           command: |
-              adb wait-for-device
-              sleep 150  # Aumentar o tempo de espera para 150s para dar mais tempo ao emulador
-              until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
-                echo "Waiting for emulator to fully boot..."
-                sleep 10
-              done
-              adb shell input keyevent 82  # Desbloqueia a tela do emulador
-              adb devices  # Diagnóstico adicional
-      
+            adb wait-for-device
+            sleep 180  # Tempo de espera aumentado para garantir que o emulador esteja totalmente inicializado
+            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+              echo "Waiting for emulator to fully boot..."
+              sleep 10
+            done
+            adb shell input keyevent 82  # Desbloqueia a tela do emulador
+            adb devices  # Confirma que o dispositivo está conectado
 
       - run:
           name: Run unit tests
@@ -79,6 +78,10 @@ jobs:
       - store_artifacts:
           path: app/build/reports
           destination: reports
+
+      - run:
+          name: List test results for debugging
+          command: ls -R app/build/reports/androidTests/connected/
 
       - run:
           name: Build debug APK
