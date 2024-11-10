@@ -158,7 +158,7 @@ com
 
 <ol>
   <li>Clone o repositório:
-    <pre><code>git clone https://github.com/seu-usuario/desafio-android-picpay.git</code></pre>
+    <pre><code>git clone https://github.com/victorhugobenevides/desafio-android-picpay.git</code></pre>
   </li>
   <li>Abra o projeto no Android Studio.</li>
   <li>Sincronize as dependências do Gradle.</li>
