@@ -1,4 +1,5 @@
 version: 2.1
+
 orbs:
   android: circleci/android@2.5.0
 
@@ -26,26 +27,43 @@ jobs:
           command: chmod +x gradlew
 
       - run:
-          name: Run unit tests with JaCoCo
-          command: ./gradlew testDebugUnitTest jacocoTestReport
+          name: Set up Android emulator
+          command: |
+            sdkmanager "system-images;android-30;google_apis;x86_64"
+            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
+            emulator -avd test -no-window -no-audio -gpu swiftshader_indirect &
+            adb wait-for-device
+            sleep 30  # Aguarda tempo adicional para inicialização completa do emulador
+            adb shell input keyevent 82  # Desbloqueia a tela se necessário
 
       - run:
-          name: Build debug APK
-          command: ./gradlew assembleDebug
+          name: Run unit tests
+          command: ./gradlew testDebugUnitTest
+
+      - run:
+          name: Generate JaCoCo report for unit tests
+          command: ./gradlew jacocoTestReport
 
       - run:
           name: Run instrumented tests and gather coverage data
           command: |
-            adb wait-for-device
-            ./gradlew connectedAndroidTest
+            ./gradlew connectedDebugAndroidTest
             adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/
 
       - run:
-          name: Generate JaCoCo Report for Instrumented Tests
-          command: ./gradlew jacocoTestReport
+          name: Generate JaCoCo report for instrumented tests
+          command: ./gradlew connectedDebugAndroidTestCoverage
 
       - store_test_results:
-          path: app/build/reports/jacoco/jacocoTestReport
+          path: app/build/test-results
+
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+
+      - run:
+          name: Build debug APK
+          command: ./gradlew assembleDebug
 
       - store_artifacts:
           path: app/build/outputs/apk/debug
