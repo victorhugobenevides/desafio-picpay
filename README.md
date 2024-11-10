@@ -1,6 +1,6 @@
-<h1 align="center">Desafio Android - PicPay</h1>
+<h1 align="left">Desafio Android - PicPay</h1>
 
-<p align="center">
+<p align="left">
     <strong>Este projeto é uma migração que implementa melhorias utilizando Clean Architecture, princípios SOLID e design patterns.</strong>
     <br>Organização e escalabilidade foram priorizadas para facilitar a manutenção e extensibilidade da aplicação.
 </p>
