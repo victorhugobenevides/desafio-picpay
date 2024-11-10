@@ -1,11 +1,10 @@
-// build.gradle (Módulo app)
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
+    id("jacoco")
 }
 
 android {
@@ -13,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.picpay.desafio.android"
-        minSdkVersion 23
+        minSdk 23
         targetSdk 35
         versionCode 1
         versionName "1.0"
@@ -28,26 +27,26 @@ android {
     }
 
     buildTypes {
-        debug {}
-
+        debug {
+            testCoverageEnabled true // Ativa cobertura de testes para debug
+        }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     buildFeatures {
         compose true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -56,7 +55,7 @@ android {
 }
 
 dependencies {
-    // Core e AndroidX
+    // Dependências agrupadas por tipo
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
@@ -128,4 +127,29 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+// Configuração JaCoCo
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+tasks.register("jacocoTestReport", JacocoReport) {
+    dependsOn "testDebugUnitTest"
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*']
+    def javaClasses = fileTree(dir: "$buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
+    def kotlinClasses = fileTree(dir: "$buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+
+    classDirectories.setFrom(files([javaClasses, kotlinClasses]))
+    sourceDirectories.setFrom(files(['src/main/java', 'src/main/kotlin']))
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ]))
 }

@@ -1,16 +1,19 @@
 version: 2.1
 orbs:
   android: circleci/android@2.5.0
+
 jobs:
   build:
     executor:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
+
     steps:
       - checkout
+
       - run:
-          name: Install JDK and set JAVA_HOME
+          name: Install dependencies
           command: |
             sudo apt-get update
             sudo apt-get install -y openjdk-17-jdk
@@ -19,45 +22,31 @@ jobs:
             echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.circlerc
 
       - run:
-          name: Grant execution permission to Gradle wrapper
+          name: Grant execution permissions to Gradle wrapper
           command: chmod +x gradlew
 
       - run:
-          name: Set up Android emulator with Google APIs and GPU
-          command: |
-            sdkmanager "system-images;android-30;google_apis;x86_64"
-            echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" -d pixel
-            emulator -avd test -no-window -gpu swiftshader_indirect -no-audio -writable-system &
+          name: Run unit tests with JaCoCo
+          command: ./gradlew testDebugUnitTest jacocoTestReport
 
-      - run:
-          name: Wait for emulator to start
-          command: |
-            adb wait-for-device
-            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
-              echo "Waiting for emulator to fully boot..."
-              sleep 210
-            
-            done
-            adb shell wm dismiss-keyguard
-            
-
-      - run:
-          name: Run instrumented tests
-          command: ./gradlew connectedAndroidTest
-      - store_test_results:
-          path: app/build/outputs/androidTest-results
-      - store_artifacts:
-          path: app/build/outputs/androidTest-results
-      - run:
-          name: Run unit tests
-          command: ./gradlew testReleaseUnitTest
-      - store_test_results:
-          path: app/build/test-results/testReleaseUnitTest
-      - store_artifacts:
-          path: app/build/test-results/testReleaseUnitTest
       - run:
           name: Build debug APK
           command: ./gradlew assembleDebug
+
+      - run:
+          name: Run instrumented tests and gather coverage data
+          command: |
+            adb wait-for-device
+            ./gradlew connectedAndroidTest
+            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/
+
+      - run:
+          name: Generate JaCoCo Report for Instrumented Tests
+          command: ./gradlew jacocoTestReport
+
+      - store_test_results:
+          path: app/build/reports/jacoco/jacocoTestReport
+
       - store_artifacts:
           path: app/build/outputs/apk/debug
           destination: debugApk
