@@ -45,23 +45,27 @@ jobs:
             adb shell input keyevent 82 # Desbloqueia a tela
 
       - run:
+          name: Run instrumented tests and gather coverage data
+          command: |
+            ./gradlew connectedDebugAndroidTest
+            echo "Listing contents of /sdcard/Android/data/com.picpay.desafio.android/files/"
+            adb shell ls /sdcard/Android/data/com.picpay.desafio.android/files/
+            echo "Attempting to find coverage.ec file..."
+            adb shell find /sdcard/ -name coverage.ec || echo "Coverage file not found on device."
+            mkdir -p app/build/outputs/code-coverage/connected/
+            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/ || echo "Coverage file could not be pulled."
+
+      - run:
+          name: Generate JaCoCo report for instrumented tests
+          command: ./gradlew connectedDebugAndroidTestCoverage
+
+      - run:
           name: Run unit tests
           command: ./gradlew testDebugUnitTest
 
       - run:
           name: Generate JaCoCo report for unit tests
           command: ./gradlew jacocoTestReport
-
-      - run:
-          name: Run instrumented tests and gather coverage data
-          command: |
-            ./gradlew connectedDebugAndroidTest
-            mkdir -p app/build/outputs/code-coverage/connected/
-            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/
-
-      - run:
-          name: Generate JaCoCo report for instrumented tests
-          command: ./gradlew connectedDebugAndroidTestCoverage
 
       - store_test_results:
           path: app/build/test-results
