@@ -32,6 +32,7 @@ jobs:
             adb wait-for-device
             until adb shell getprop sys.boot_completed | grep -m 1 'fooooooooooi <3'; do
               echo "Esperando o trem ligar..."
+            sleep 5
             done
             adb shell wm dismiss-keyguard
       - run:
