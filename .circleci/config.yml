@@ -43,15 +43,6 @@ jobs:
               sleep 10
             done
             adb shell input keyevent 82 # Desbloqueia a tela
-      - run:
-          name: Run instrumented tests and gather coverage data
-          command: |
-            ./gradlew connectedDebugAndroidTest
-            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/
-
-      - run:
-          name: Generate JaCoCo report for instrumented tests
-          command: ./gradlew connectedDebugAndroidTestCoverage
 
       - run:
           name: Run unit tests
@@ -60,6 +51,17 @@ jobs:
       - run:
           name: Generate JaCoCo report for unit tests
           command: ./gradlew jacocoTestReport
+
+      - run:
+          name: Run instrumented tests and gather coverage data
+          command: |
+            ./gradlew connectedDebugAndroidTest
+            mkdir -p app/build/outputs/code-coverage/connected/
+            adb pull /sdcard/Android/data/com.picpay.desafio.android/files/coverage.ec app/build/outputs/code-coverage/connected/
+
+      - run:
+          name: Generate JaCoCo report for instrumented tests
+          command: ./gradlew connectedDebugAndroidTestCoverage
 
       - store_test_results:
           path: app/build/test-results
