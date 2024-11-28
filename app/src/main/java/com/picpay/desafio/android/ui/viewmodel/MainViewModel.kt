@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.picpay.desafio.android.domain.entity.User
 import com.picpay.desafio.android.domain.usecase.di.GetUsers
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +28,7 @@ open class MainViewModel @Inject constructor(
     private fun getUsers() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            withContext(Dispatchers.IO) {
                 val result = getUsers.execute()
                 when {
                     result.isSuccess -> {
@@ -35,6 +38,7 @@ open class MainViewModel @Inject constructor(
                         _uiState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Error")
                     }
                 }
+            }
         }
     }
 
